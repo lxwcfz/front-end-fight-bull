@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>vue-斗牛</title>
+  </head>
+  <body>
+    <style>
+      html {
+        /*用于 获取 屏幕的可视宽高*/
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        /*让 body 初始 width 和 height 就 等于 页面可视区域的 宽高*/
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        /*文字居中*/
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @media screen and (orientation: portrait) { /* 竖屏 */
+        body {
+          transform-origin: 0 0;
+          transform: rotateZ(90deg) translateY(-100%);
+        }
+      } 
+      @media screen and (orientation: landscape) { /* 横屏 */
+
+      }
+    </style>
+    <noscript>
+      <strong>We're sorry but vue-ts-elem doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script>
+      function resize() {
+        var body = document.getElementsByTagName('body')[0];
+        var html = document.getElementsByTagName('html')[0];
+        var width = html.clientWidth;
+        var height =  html.clientHeight;
+        var max = width > height ? width : height;
+        var min = width > height ? height : width;
+        body.style.width = max + "px";
+        body.style.height = min + "px";
+      }
+      resize();
+      window.addEventListener("resize", resize)
+    </script>
+  </body>
+</html>
