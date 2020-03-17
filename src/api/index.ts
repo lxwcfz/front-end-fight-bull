@@ -7,3 +7,10 @@ export function loginApi(data) {
         data
     })
 }
+
+export function getRoomList() {
+    return request({
+        url: '/room/list',
+        method: 'GET'
+    })
+}

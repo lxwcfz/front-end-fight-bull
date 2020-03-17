@@ -57,5 +57,14 @@ declare global {
     role: RoleInfo,
     list: number[]
   }
+
+  interface RoomInfo {
+    name: string,
+    id: number,
+    creator: {
+      name: string,
+      id: number
+    }
+  }
 }
 
