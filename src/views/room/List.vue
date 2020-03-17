@@ -6,7 +6,7 @@
       div.flex.align-center.justify-center
         span.orange.f4.title 房间列表（{{ list.length }}）
     div.px4.pb4.h100.overflow-y.room-list
-      div.room-wrap.overflow(v-for="item in list", :key="item.id")
+      div.room-wrap.overflow(@click="toRoom(item)", v-for="item in list", :key="item.id")
         span.name.f4.orange {{ item.name }}
 </template>
 
@@ -34,7 +34,14 @@ export default class RoomList extends Vue {
   }
   
   //methods
-  
+  toRoom(item) {
+    this.$router.push({
+      name: 'room',
+      query: {
+        id: item.id
+      }
+    });
+  }
 }
 </script>
 
