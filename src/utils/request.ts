@@ -23,8 +23,11 @@ axios.interceptors.response.use(function (response) {
     if(response.data) {
       const code = response.data.status;
       if (code === 403) {
-        removeStorage(storageName);
-        window.location.reload();
+        Notify({ type: 'warning', message: '登录信息过期' });
+        setTimeout(() => {
+          removeStorage(storageName);
+          window.location.reload();
+        }, 500);
         return;
       }
       if (code === 400) {
