@@ -12,11 +12,26 @@ export function socket(events?: {
   };
   ws.onmessage = evt => {
     const data = JSON.parse(evt.data);
-    console.log('websocket data:', data);
+    // console.log('websocket data:', data);
     switch (data.type) {
+      case 'heartBeat':
+        console.log('heart beat');
+        break;
       case WsEventType.newRoom:
-        console.log('有人创建了房间');
-        events && events[WsEventType.newRoom] && events[WsEventType.newRoom](data.data);
+        // console.log('有人创建了房间', data.data.data);
+        events && events[WsEventType.newRoom] && events[WsEventType.newRoom](data.data.data);
+        break;
+      case WsEventType.intoRoom:
+        // console.log('有人进入了房间', data.data.data);
+        events && events[WsEventType.intoRoom] && events[WsEventType.intoRoom](data.data.data);
+        break;
+      case WsEventType.deleteRoom:
+        // console.log('有人删除了房间', data.data.data);
+        events && events[WsEventType.deleteRoom] && events[WsEventType.deleteRoom](data.data.data);
+        break;
+      case WsEventType.outRoom:
+        console.log('有人离开了房间', data);
+        events && events[WsEventType.outRoom] && events[WsEventType.outRoom](data.data.data);
         break;
     }
   };
@@ -32,7 +47,11 @@ export function socket(events?: {
 
 export enum WsEventType {
   newRoom = 0,
-
+  ready = 1,
+  handOutCard = 2,
+  intoRoom = 3,
+  outRoom = 4,
+  deleteRoom = 5
 }
 export interface WsSendData {
   type: WsEventType,

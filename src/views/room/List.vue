@@ -8,12 +8,15 @@
     div.px4.pb4.h100.overflow-y.room-list
       div.room-wrap.overflow(@click="toRoom(item)", v-for="item in list", :key="item.id")
         span.name.f4.orange {{ item.name }}
+        span.close.f4.white(v-if="canDel(item)", @click.stop="deleteRoom(item)") 删除
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from "vue-property-decorator";
+import { Vue, Prop, Watch, Component } from "vue-property-decorator";
 import {getRoomList} from "@/api";
+import { Getter } from 'vuex-class';
 import BtnBack from "@/components/BtnBack.vue";
+import {socket, WsEventType} from "@/socket";
 
 @Component({
   components: {
@@ -22,15 +25,48 @@ import BtnBack from "@/components/BtnBack.vue";
   }
 })
 export default class RoomList extends Vue {
+
+  @Getter loginUser;
   //props
   
   //data
   list: RoomInfo[] = [];
+  ws: WebSocket | null = null;
+
+  @Watch('list', { immediate: true })
+  onListChange(list) {
+    list.forEach(item => {
+      if (typeof item.creator === 'string') {
+        item.creator = JSON.parse(item.creator);
+      }
+    });
+  }
+
   //生命周期
   mounted() {
     getRoomList().then(res => {
       this.list = res.data;
     });
+    this.ws = socket({
+      [WsEventType.newRoom]: this.handleNewRoom.bind(this),
+      [WsEventType.deleteRoom]: this.handleDeleteRoom.bind(this)
+    });
+  }
+
+  handleNewRoom(data) {
+    this.list.push(data);
+  }
+
+  handleDeleteRoom(data) {
+    this.list = data;
+  }
+
+  canDel(item) {
+    return item.creator.id == this.loginUser.id && !(item.member && item.member.length > 0);
+  }
+
+  beforeDestroy() {
+    this.ws && this.ws.close();
   }
   
   //methods
@@ -41,6 +77,14 @@ export default class RoomList extends Vue {
         id: item.id
       }
     });
+  }
+  deleteRoom(item) {
+    (<WebSocket>this.ws).send(JSON.stringify({
+      type: WsEventType.deleteRoom,
+      data: {
+        id: item.id
+      }
+    }));
   }
 }
 </script>
@@ -58,8 +102,8 @@ export default class RoomList extends Vue {
       flex-basis 100%
   .room-list
     display flex
-    align-items center
-    justify-content space-between
+    align-items flex-start
+    justify-content flex-start
     flex-flow row wrap
     width 100%
     &:after

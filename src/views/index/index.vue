@@ -74,13 +74,26 @@
     }
 
     handleNewRoom(data) {
-      Notify({ type: 'success', message: `${data.name}创建成功` });
+      if (JSON.parse(data.creator).id == this.loginUser.id) {
+        this.setMovement(`${data.name}创建成功`);
+      } else {
+        this.setMovement(`有人创建了房间-${data.name}`);
+      }
       this.showCreate = false;
       this.newRoomName = '';
     }
 
+    setMovement(msg) {
+      const div = document.createElement('div');
+      div.className = 'movement orange';
+      div.innerHTML = msg;
+      (<any>document).body.querySelector('.index-page').appendChild(div);
+      setTimeout(() => {
+        (<any>document).body.querySelector('.index-page').removeChild(div);
+      }, 7000);
+    }
+
     beforeDestroy() {
-      console.log('destroy');
       this.ws && this.ws.close();
     }
 
@@ -214,6 +227,15 @@
     }
     100% {
       width 200px
+    }
+  }
+
+  @keyframes movement {
+    from {
+      transform none
+    }
+    to {
+      transform translateX(-1000px)
     }
   }
 
@@ -448,5 +470,17 @@
   .create-pop
     background #d0a066
     .van-action-sheet__close
-      color #fff
+      color #323233
+  .movement
+    position: fixed;
+    display inline-block
+    right: 0;
+    top: 46px;
+    height: 30px;
+    font-size 14px
+    line-height: 30px;
+    background: rgba(0,0,0,.3);
+    padding: 0 20px;
+    border-radius: 10px;
+    animation movement 10s linear
 </style>
