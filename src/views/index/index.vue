@@ -65,6 +65,7 @@
     ws: WebSocket | null = null;
     showCreate = false;
     newRoomName = '';
+    timer: any = '';
 
     mounted() {
       const ws = socket({
@@ -88,12 +89,13 @@
       div.className = 'movement orange';
       div.innerHTML = msg;
       (<any>document).body.querySelector('.index-page').appendChild(div);
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         (<any>document).body.querySelector('.index-page').removeChild(div);
       }, 7000);
     }
 
     beforeDestroy() {
+      clearTimeout(this.timer);
       this.ws && this.ws.close();
     }
 

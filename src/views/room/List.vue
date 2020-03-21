@@ -49,8 +49,14 @@ export default class RoomList extends Vue {
     });
     this.ws = socket({
       [WsEventType.newRoom]: this.handleNewRoom.bind(this),
-      [WsEventType.deleteRoom]: this.handleDeleteRoom.bind(this)
+      [WsEventType.deleteRoom]: this.handleDeleteRoom.bind(this),
+      [WsEventType.intoRoom]: this.handleIntoRoom.bind(this),
+      [WsEventType.outRoom]: this.handleIntoRoom.bind(this),
     });
+  }
+
+  handleIntoRoom(data) {
+    getRoomList().then(res => this.list = res.data);
   }
 
   handleNewRoom(data) {
@@ -62,7 +68,9 @@ export default class RoomList extends Vue {
   }
 
   canDel(item) {
-    return item.creator.id == this.loginUser.id && !(item.member && item.member.length > 0);
+    const data = typeof item.member == 'string' ? JSON.parse(item.member) : item.member;
+    console.log(data);
+    return item.creator.id == this.loginUser.id && !(data && data.length > 0);
   }
 
   beforeDestroy() {

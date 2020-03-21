@@ -1,5 +1,6 @@
 <template lang="pug">
-    div(:class="data.role.id == userInfo.id ? 'self-group' : `group-${position}`", v-if="data")
+    div.relative(:class="data.role.id == userInfo.id ? 'self-group' : `group-${position}`", v-if="data")
+        slot(name="ready")
         Role(:info="data.role")
         CardGroup(:list="data.list" :isSelf="data.role.id == userInfo.id")
 </template>

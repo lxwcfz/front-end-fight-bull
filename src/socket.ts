@@ -30,8 +30,14 @@ export function socket(events?: {
         events && events[WsEventType.deleteRoom] && events[WsEventType.deleteRoom](data.data.data);
         break;
       case WsEventType.outRoom:
-        console.log('有人离开了房间', data);
+        // console.log('有人离开了房间', data);
         events && events[WsEventType.outRoom] && events[WsEventType.outRoom](data.data.data);
+        break;
+      case WsEventType.ready:
+        events && events[WsEventType.ready] && events[WsEventType.ready](data.data.data);
+        break;
+      case WsEventType.handOutCard:
+        events && events[WsEventType.handOutCard] && events[WsEventType.handOutCard](data.data.data);
         break;
     }
   };

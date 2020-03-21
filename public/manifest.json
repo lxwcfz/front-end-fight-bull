@@ -1,14 +1,14 @@
 {
-  "name": "vue-ts-elem",
-  "short_name": "vue-ts-elem",
+  "name": "lxw-fight-bull",
+  "short_name": "fight-bull",
   "icons": [
     {
-      "src": "./img/icons/android-chrome-192x192.png",
+      "src": "./img/icons/niuniu.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./img/icons/android-chrome-512x512.png",
+      "src": "./img/icons/niuniu.png",
       "sizes": "512x512",
       "type": "image/png"
     }

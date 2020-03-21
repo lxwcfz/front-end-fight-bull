@@ -1,8 +1,10 @@
 <template>
   <div class="room-home h100">
     <img src="@/assets/返回.png" @click="outRoom" alt="">
-    <img class="logo" src="@/assets/logo.png" alt="">
-    <Group v-for="(item,index) in data" :key="index" :position="index+1" :data="item"></Group>
+    <img class="logo" src="@/assets/logo.png" @click="ready" alt="">
+    <Group v-for="(item,index) in data" :key="index" :position="index+1" :data="item">
+      <span slot="ready" v-show="item.ready" class="white absolute left0 top0">已准备</span>
+    </Group>
   </div>
 </template>
 
@@ -31,7 +33,9 @@ export default class Home extends Vue {
     const _this = this;
     this.ws = socket({
       [WsEventType.intoRoom]: this.handleIntoRoom.bind(this),
-      [WsEventType.outRoom]: this.handleOutRoom.bind(this)
+      [WsEventType.outRoom]: this.handleOutRoom.bind(this),
+      [WsEventType.ready]: this.handleIntoRoom.bind(this),
+      [WsEventType.handOutCard]: this.handleIntoRoom.bind(this)
     });
     this.ws.onopen = () => {
       (<WebSocket>this.ws).send(JSON.stringify({
@@ -41,6 +45,15 @@ export default class Home extends Vue {
         }
       }));
     }
+  }
+
+  ready() {
+    (<WebSocket>this.ws).send(JSON.stringify({
+      type: WsEventType.ready,
+      data: {
+        roomId: this.roomId
+      }
+    }));
   }
 
   beforeDestroy() {
@@ -65,14 +78,19 @@ export default class Home extends Vue {
     data.forEach(item => {
       list.push({
         role: item.user,
-        list: item.cards
+        list: item.card,
+        ready: item.ready
       });
     });
     this.data = list;
   }
   handleOutRoom(data) {
-    if (data.front) return;
-    this.handleIntoRoom(data);
+    console.log(data);
+    if (data.front) { // 
+
+    } else {
+      this.handleIntoRoom(data);
+    }
   }
 }
 </script>

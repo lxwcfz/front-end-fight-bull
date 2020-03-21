@@ -55,7 +55,8 @@ declare global {
 
   interface GroupInfo {
     role: RoleInfo,
-    list: number[]
+    list: number[],
+    ready: boolean
   }
 
   interface RoomInfo {
