@@ -3,7 +3,7 @@
     <img src="@/assets/返回.png" @click="outRoom" alt="">
     <img class="logo" src="@/assets/logo.png" @click="ready" alt="">
     <Group v-for="(item,index) in data" :key="index" :position="index+1" :data="item">
-      <span slot="ready" v-show="item.ready" class="white absolute left0 top0">已准备</span>
+      <img slot="ready" src="@/assets/ok.png" v-show="item.ready" class="white absolute left0 top0" />
     </Group>
   </div>
 </template>
@@ -85,8 +85,7 @@ export default class Home extends Vue {
     this.data = list;
   }
   handleOutRoom(data) {
-    console.log(data);
-    if (data.front) { // 
+    if (data.front) {
 
     } else {
       this.handleIntoRoom(data);

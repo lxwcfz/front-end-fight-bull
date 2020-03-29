@@ -1,8 +1,8 @@
 <template lang="pug">
-    div.relative(:class="data.role.id == userInfo.id ? 'self-group' : `group-${position}`", v-if="data")
+    div.relative(:class="data.role.id == loginUser.id ? 'self-group' : `group-${position}`", v-if="data")
         slot(name="ready")
         Role(:info="data.role")
-        CardGroup(:list="data.list" :isSelf="data.role.id == userInfo.id")
+        CardGroup(:list="data.list" :isSelf="data.role.id == loginUser.id")
 </template>
 
 <script lang="ts">
@@ -10,6 +10,7 @@ import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import Role from '@/components/Role.vue';
 import CardGroup from '@/components/CardGroup.vue';
 import getter from '../store/getter';
+import { Getter } from 'vuex-class';
 
 @Component({
     components: {
@@ -23,12 +24,7 @@ export default class Group extends Vue {
     @Prop()
     position!: number;
 
-    userInfo: RoleInfo = {
-        name: 'name',
-        img: require('../assets/role-male.png'),
-        id: 1,
-        score: 100
-    };
+    @Getter loginUser;
 }
 </script>
 

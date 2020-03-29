@@ -3,8 +3,7 @@
         div.inline-block(
             v-for="(item, index) in list", 
             :key="index", 
-            :class="isSelf ? 'self-item' : `item`",
-            :style="{'left': `${index*30}px`}")
+            :class="isSelf ? `self-item card${index}` : `item card${index}`",)
             Card(:number="item")
 </template>
 
@@ -35,4 +34,14 @@ export default class CardGroup extends Vue {
     .item
         position absolute
         top 0px
+    .card0
+        left 0
+    .card1
+        left 30px
+    .card2
+        left 60px
+    .card3
+        left 90px
+    .card4
+        left 120px
 </style>
