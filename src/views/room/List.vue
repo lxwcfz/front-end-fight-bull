@@ -8,7 +8,8 @@
     div.px4.pb4.h100.overflow-y.room-list
       div.room-wrap.overflow(@click="toRoom(item)", v-for="item in list", :key="item.id")
         span.name.f4.orange {{ item.name }}
-        span.close.f4.white(v-if="canDel(item)", @click.stop="deleteRoom(item)") 删除
+        span.number {{ item.member ? JSON.parse(item.member).length : 0 }} / 5
+        span.close.f4.orange(v-if="canDel(item)", @click.stop="deleteRoom(item)") 删除
 </template>
 
 <script lang="ts">
@@ -69,7 +70,7 @@ export default class RoomList extends Vue {
 
   canDel(item) {
     const data = typeof item.member == 'string' ? JSON.parse(item.member) : item.member;
-    console.log(data);
+    // console.log(data);
     return item.creator.id == this.loginUser.id && !(data && data.length > 0);
   }
 
@@ -127,9 +128,23 @@ export default class RoomList extends Vue {
     box-shadow 0 0 5px #ddd
     .name
       height 24px
+      white-space nowrap
+      text-overflow ellipsis
+      overflow hidden
       width 100%
       text-align center
       display inline-block
       line-height 24px
       background rgba(0,0,0,.3)
+  .number
+    color #fff
+    font-size 24px
+    line-height 47px
+  .close
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    background: rgba(255,255,255,.3);
+    height: 30px;
+    line-height: 30px;
 </style>

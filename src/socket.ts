@@ -39,6 +39,15 @@ export function socket(events?: {
       case WsEventType.handOutCard:
         events && events[WsEventType.handOutCard] && events[WsEventType.handOutCard](data.data.data);
         break;
+      case WsEventType.getHost:
+        events && events[WsEventType.getHost] && events[WsEventType.getHost](data.data.data);
+        break;
+      case WsEventType.finish:
+        events && events[WsEventType.finish] && events[WsEventType.finish](data.data.data);
+        break;
+      case WsEventType.again:
+        events && events[WsEventType.again] && events[WsEventType.again](data.data.data);
+        break;
     }
   };
   ws.onclose = evt => {
@@ -57,7 +66,10 @@ export enum WsEventType {
   handOutCard = 2,
   intoRoom = 3,
   outRoom = 4,
-  deleteRoom = 5
+  deleteRoom = 5,
+  getHost = 6,  //抢庄
+  finish = 7,
+  again = 8
 }
 export interface WsSendData {
   type: WsEventType,
