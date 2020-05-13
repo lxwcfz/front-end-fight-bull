@@ -3,7 +3,7 @@
     div.header.tl.white
       div.flex.align-center
         div.head-item
-          img.head-img(:src="loginUser.img || require('@/assets/role-male.png')")
+          img.head-img(@click="showHeadList = true", :src="loginUser.img || require('@/assets/role-male.png')")
           div.name-title-wrap
             span.name.tl.text-overflow {{ loginUser.name }}
             span.title.inline-block.ml1(:class="loginUser.score > 100 ? 'badge-red' : 'badge-blue'") {{ getTitle(loginUser.score) }}
@@ -35,6 +35,8 @@
         div.content
           span.overflow-y.px1.h100.inline-block
             span.mt2.inline-block(v-for="(item,index) in rule", :key="index") {{ item }}
+    //- 选择头像
+
     //- 新建房间
     van-action-sheet.create-pop(v-model="showCreate", title="创建房间")
       div.w100.p4.flex.align-center.justify-center.create-wrap
@@ -66,6 +68,7 @@
     showCreate = false;
     newRoomName = '';
     timer: any = '';
+    showHeadList = false;
 
     mounted() {
       const ws = socket({
@@ -82,6 +85,9 @@
       }
       this.showCreate = false;
       this.newRoomName = '';
+    }
+    selectHead(name) {
+
     }
 
     setMovement(msg) {
