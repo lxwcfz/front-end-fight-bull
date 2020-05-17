@@ -1,6 +1,6 @@
 <template lang="pug">
     div.role-wrap.inline-block(v-if="info")
-        img.head-img(:src="info.img || getRandomHead()")
+        img.head-img(:src="handleHead(info.img) || getRandomHead()")
         div.name.w100.tc.text-overflow {{ info.name }}
         div.score.w100.tc.text-overflow {{ score }}
         span.money(:class="{'crease': showIncrease}") {{ increase > 0 ? `+${increase}` : `${increase}` }}
@@ -54,7 +54,13 @@ export default class Role extends Vue {
         }
     }
     getRandomHead() {
-        return Math.random() > 1 ? require('../assets/role-male.png') : require('../assets/role-female.png')
+        return require('../assets/role-bull.png')
+    }
+    handleHead(src) {
+        if (!src) {
+            return '';
+        }
+        return require(`@/assets/${src}`);
     }
 }
 </script>

@@ -17,6 +17,19 @@ declare module 'vue/types/vue' {
     // $confirm: ElMessageBoxShortcutMethod,
     // $loading: (options: LoadingServiceOptions) => ElLoadingComponent,
     $validator: Validator,
+    $audio: {
+      src: string,
+      play: Function,
+      success: Function,
+      pop: Function,
+      btn1: Function,
+      btn2: Function,
+      btn3: Function,
+      btn4: Function,
+      countDown: Function,
+      fail: Function,
+      victory: Function
+    }
   }
 }
 // declare module 'element-ui/types' { // element scroll组件声明

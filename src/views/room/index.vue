@@ -4,6 +4,7 @@
     <span v-show="!selfReady" class="btn-ready" @click="ready">点击准备</span>
     <span v-show="end" class="btn-ready" @click="playAgain">再来一局</span>
     <span class="host-time" v-show="allReady && hostRestTime > 0">准备抢庄（{{ hostRestTime }}s）</span>
+    <span class="host-time" v-show="selfReady && !allReady && !end && !rotate">等待其他玩家准备...</span>
     <span v-show="allReady && hostRestTime == 0 && !host" class="btn-ready" @click="getHost">抢庄</span>
     <Group @finish="onFinish" @open="onOpen" v-for="(item,index) in data" :host="host" :key="index" :position="index+1" :data="item"></Group>
   </div>
@@ -40,14 +41,13 @@ export default class Home extends Vue {
     });
   }
   get allReady() {
-    const ready = this.data.length > 0 && this.data.every(item => item.ready);
+    const ready = this.data.length > 1 && this.data.every(item => item.ready) && !this.data.some(item => item.ready && item.finish);
     return ready;
   }
 
   @Getter loginUser;
 
   mounted() {
-    const _this = this;
     this.ws = socket({
       [WsEventType.intoRoom]: this.handleIntoRoom.bind(this),
       [WsEventType.outRoom]: this.handleOutRoom.bind(this),
@@ -68,6 +68,7 @@ export default class Home extends Vue {
   }
 
   startTimeout() {
+    this.$audio.countDown();
     setTimeout(() => {
       this.hostRestTime -= 1;
       if (this.hostRestTime > 0) {
@@ -77,6 +78,7 @@ export default class Home extends Vue {
   }
 
   ready() {
+    this.$audio.pop();
     (<WebSocket>this.ws).send(JSON.stringify({
       type: WsEventType.ready,
       data: {
@@ -86,6 +88,7 @@ export default class Home extends Vue {
   }
 
   getHost() {
+    this.$audio.btn4();
     // console.log('抢庄');
     (<WebSocket>this.ws).send(JSON.stringify({
       type: WsEventType.getHost,
@@ -96,6 +99,7 @@ export default class Home extends Vue {
   }
 
   playAgain() {
+    this.$audio.pop();
     this.host = null;
     this.hostRestTime = 3;
     this.rotate = false;
@@ -109,6 +113,7 @@ export default class Home extends Vue {
   }
 
   onFinish(item) {
+    this.$audio.btn1();
     (<WebSocket>this.ws).send(JSON.stringify({
       type: WsEventType.finish,
       data: {
@@ -117,6 +122,7 @@ export default class Home extends Vue {
     }));
   }
   onOpen() {
+    this.$audio.btn2();
     this.rotate = true;
   }
 
@@ -145,6 +151,7 @@ export default class Home extends Vue {
     member.forEach(item => {
       if (item.user.id == info.id) {
         info.score += item.money;
+        item.money > 0 ? this.$audio.victory() : this.$audio.fail();
         this.$setStorage(storageName, info);
         dispatchSetLoginUser(info);
       }
@@ -156,6 +163,7 @@ export default class Home extends Vue {
   }
 
   outRoom() {
+    this.$audio.pop();
     (<WebSocket>this.ws).send(JSON.stringify({
       type: WsEventType.outRoom,
       data: {

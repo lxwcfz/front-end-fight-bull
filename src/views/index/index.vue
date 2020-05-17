@@ -3,7 +3,7 @@
     div.header.tl.white
       div.flex.align-center
         div.head-item
-          img.head-img(@click="showHeadList = true", :src="loginUser.img || require('@/assets/role-male.png')")
+          img.head-img(@click="showHeadList = true", :src="handleHead(loginUser.img) || require('@/assets/role-bull.png')")
           div.name-title-wrap
             span.name.tl.text-overflow {{ loginUser.name }}
             span.title.inline-block.ml1(:class="loginUser.score > 100 ? 'badge-red' : 'badge-blue'") {{ getTitle(loginUser.score) }}
@@ -36,7 +36,7 @@
           span.overflow-y.px1.h100.inline-block
             span.mt2.inline-block(v-for="(item,index) in rule", :key="index") {{ item }}
     //- 选择头像
-
+    head-selection(v-show="showHeadList", @submit="onSubmitHead")
     //- 新建房间
     van-action-sheet.create-pop(v-model="showCreate", title="创建房间")
       div.w100.p4.flex.align-center.justify-center.create-wrap
@@ -51,9 +51,14 @@
   import {Popup, Notify, Tag, ActionSheet} from 'vant';
   import {storageName, RULE, TITLE} from '../../config/config';
   import {socket, WsEventType, WsSendData} from "@/socket";
+  import HeadSelection from "@/components/HeadSelection.vue";
+  import {checkExpireApi, submitHeadPicApi} from "@/api";
+  import {setStorage} from "@/utils/storage";
+  import {dispatchSetLoginUser} from "@/store/dispatches";
 
   @Component({
     components: {
+      HeadSelection,
       vantPopup: Popup,
       vanTag: Tag,
       vanActionSheet: ActionSheet
@@ -71,10 +76,11 @@
     showHeadList = false;
 
     mounted() {
-      const ws = socket({
-        [WsEventType.newRoom]: this.handleNewRoom
-      });
-      this.ws = ws;
+        checkExpireApi();
+        const ws = socket({
+            [WsEventType.newRoom]: this.handleNewRoom
+        });
+        this.ws = ws;
     }
 
     handleNewRoom(data) {
@@ -83,11 +89,9 @@
       } else {
         this.setMovement(`有人创建了房间-${data.name}`);
       }
+      this.$audio.success();
       this.showCreate = false;
       this.newRoomName = '';
-    }
-    selectHead(name) {
-
     }
 
     setMovement(msg) {
@@ -106,16 +110,36 @@
     }
 
     toRoom() {
+      this.$audio.pop();
       this.$router.push({
         name: "roomList"
       });
     }
 
+    onSubmitHead(name) {
+      submitHeadPicApi({ name }).then(res => {
+          const user = JSON.parse(JSON.stringify(this.loginUser));
+          user.img = name;
+          setStorage(storageName, user);
+          dispatchSetLoginUser(user);
+          this.showHeadList = false;
+      })
+    }
+
+    handleHead(src) {
+        if (!src) {
+            return '';
+        }
+        return require(`@/assets/${src}`);
+    }
+
     toCreate() {
+      this.$audio.pop();
       this.showCreate = true;
     }
 
     ensureCreateRoom() {
+      this.$audio.pop();
       const data: WsSendData = {
         type: WsEventType.newRoom,
         data: {
@@ -126,6 +150,7 @@
     }
 
     logout() {
+      this.$audio.pop();
       this.$removeStorage(storageName);
       const url = window.location.href;
       window.location.href = url.replace(/#\/.*/, 'login.html');

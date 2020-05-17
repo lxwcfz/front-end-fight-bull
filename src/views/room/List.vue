@@ -71,7 +71,7 @@ export default class RoomList extends Vue {
   canDel(item) {
     const data = typeof item.member == 'string' ? JSON.parse(item.member) : item.member;
     // console.log(data);
-    return item.creator.id == this.loginUser.id && !(data && data.length > 0);
+    return (item.creator.id == this.loginUser.id && !(data && data.length > 0)) || this.loginUser.name == 'admin';
   }
 
   beforeDestroy() {
@@ -80,6 +80,7 @@ export default class RoomList extends Vue {
   
   //methods
   toRoom(item) {
+    this.$audio.pop();
     this.$router.push({
       name: 'room',
       query: {
@@ -88,6 +89,7 @@ export default class RoomList extends Vue {
     });
   }
   deleteRoom(item) {
+    this.$audio.pop();
     (<WebSocket>this.ws).send(JSON.stringify({
       type: WsEventType.deleteRoom,
       data: {

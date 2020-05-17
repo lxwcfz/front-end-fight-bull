@@ -6,6 +6,7 @@ export function socket(events?: {
 }) {
   const token = getStorage(storageName).token;
   const url = `ws://localhost:8001?token=${token}`;
+  // const url = `ws://139.9.113.43:8001?token=${token}`;
   const ws = new WebSocket(url);
   ws.onopen = evt => {
     console.log('websocket connected');
@@ -55,6 +56,9 @@ export function socket(events?: {
   };
   ws.onerror = evt => {
     console.log('websocket connect error', evt);
+    setTimeout(() => {
+      socket(events);
+    }, 2000);
   };
 
   return ws;

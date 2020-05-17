@@ -1,6 +1,7 @@
 /**
  * 添加项目配置文件
  */
+// export const API_URL = 'http://139.9.113.43:3000';
 export const API_URL = 'http://localhost:3000';
 export const storageName = 'userInfo';
 export const TITLE = new Map([
