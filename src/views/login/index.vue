@@ -11,6 +11,7 @@
       button.btn(@click="doLogin()") 登录 / 注册
         van-loading.ml1.inline-block(type="spinner", color="#f9ab37", :size="14", v-show="loading")
     img.logo-left(src="../../assets/logo.png")
+    audio(autoplay style="display: none;" src="@/assets/bgm.mp3")
 </template>
 
 <script lang="ts">

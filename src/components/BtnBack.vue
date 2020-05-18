@@ -23,6 +23,7 @@ export default class BtnBack extends Vue {
   
   //methods
   back() {
+    this.$audio.pop();
     this.$router.go(-1);
   }
 }

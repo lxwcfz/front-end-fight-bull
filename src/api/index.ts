@@ -14,3 +14,16 @@ export function getRoomList() {
         method: 'GET'
     })
 }
+export function submitHeadPicApi(query: {name: string}) {
+    return request({
+        url: '/users/submitHead',
+        method: 'POST',
+        data: query
+    })
+}
+export function checkExpireApi() {
+    return request({
+        url: '/users/expire',
+        method: 'POST'
+    })
+}
